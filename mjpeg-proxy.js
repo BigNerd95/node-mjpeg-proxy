@@ -50,6 +50,10 @@ var MjpegProxy = exports.MjpegProxy = function(mjpegUrl) {
   self.globalMjpegResponse = null;
 
   self.proxyRequest = function(req, res) {
+    
+    if(res.socket==null){
+      return;
+    }
 
     // There is already another client consuming the MJPEG response
     if (self.audienceResponses.length > 0) {
@@ -127,7 +131,7 @@ var MjpegProxy = exports.MjpegProxy = function(mjpegUrl) {
     self.audienceResponses.push(res);
     self.newAudienceResponses.push(res);
 
-    req.socket.on('close', function () {
+    res.socket.on('close', function () {
       // console.log('exiting client!');
 
       self.audienceResponses.splice(self.audienceResponses.indexOf(res), 1);
